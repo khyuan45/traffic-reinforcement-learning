@@ -10,9 +10,9 @@ day2:雨天+工作日
 day19:雨天+周末
 day25:晴天+周末
 '''
-
-speed_matrix_data=pd.read_csv(Data_File_Path+'\\'+ChosenDate+'\\'+ChosenDate+'_Cross'+str(i)+'.csv',index_col=0
-
+speed_matrix_data=pd.read_csv(Data_File_Path+'\\'+ChosenDate+'\\'+ChosenDate+'_updated.csv')
+poisson_matrix_data=pd.read_csv(Data_File_Path+'\\'+ChosenDate+'\\'+ChosenDate+'_Count_TR.csv')
+poisson_matrix_data['Code2']=poisson_matrix_data.apply(lambda x:x['RoadCode'][-2:],axis=1)
 #以下四个是四个路口的转移矩阵，使用dayx_Cross1\2\3\4.csv
 transition_matrix_data=[]
 for i in range(1,5):
@@ -51,5 +51,12 @@ def transition_matrix(cross_id, epoch):
 
 
 def poisson_matrix(cross_id, epoch):
+    outArray=np.zeros(4)
+    cross=ord(cross_id)-65 #ABCD通过ASCII读取转为0123
+    for i in range(0,4):
+        key=order[cross][i]+str(cross+1)
+        count=sum(poisson_matrix_data[(poisson_matrix_data['Code2']==key) & (poisson_matrix_data['Time']==int(epoch/90))]['Count'])
+        outArray[i]=count/90
+    return outArray
 
-    pass
+'''这里依次返回西北东南四个方向前往路口的期望车辆数（10秒内）'''
