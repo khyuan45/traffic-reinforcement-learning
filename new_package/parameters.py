@@ -17,6 +17,12 @@ for i in range(1,5):
     transition_matrix_data.append(np.array(pd.read_csv(Data_File_Path+'\\'+ChosenDate+'\\'+ChosenDate+'_Cross'+str(i)+'.csv',index_col=0)))
 
 
+'''
+注意在调用时，return的matrix中，如speed_maxtrix(id,epoch)[i,j]，代表从i方向通过id到j方向的车在epoch时间中的平均速度
+其中，i,j的取值为0,1,2,3，分别代表西，北，东，南
+'''
+    
+
 def speed_matrix(id, epoch):
     '''
     TODO 这里直接和kh的模型进行对接，
