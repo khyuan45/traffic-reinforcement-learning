@@ -11,6 +11,8 @@ day19:雨天+周末
 day25:晴天+周末
 '''
 
+speed_matrix_data=pd.read_csv(Data_File_Path+'\\'+ChosenDate+'\\'+ChosenDate+'_Cross'+str(i)+'.csv',index_col=0
+
 #以下四个是四个路口的转移矩阵，使用dayx_Cross1\2\3\4.csv
 transition_matrix_data=[]
 for i in range(1,5):
@@ -18,30 +20,36 @@ for i in range(1,5):
 
 
 '''
-注意在调用时，return的matrix中，如speed_maxtrix(id,epoch)[i,j]，代表从i方向通过id到j方向的车在epoch时间中的平均速度
+注意在调用时，return的matrix中，如speed_maxtrix(cross_id,epoch)[i,j]，代表从i方向通过cross_id到j方向的车在epoch时间中的平均速度
 其中，i,j的取值为0,1,2,3，分别代表西，北，东，南
 '''
     
 
-def speed_matrix(id, epoch):
+def speed_matrix(cross_id, epoch):
+    outMat=np.zeros((4,4))
+    order=['baxc','xdyz','yefg','hzji']
+    cross=ord(cross_id)-65 #ABCD通过ASCII读取转为0123
+    for i in range(0,4):
+        for j in range(0,4):
+            key=order[cross][i]+str(cross+1)+order[cross][j] #转弯方式对应的code
+            speed=sum(speed_matrix_data[(speed_matrix_data['Code']==key) & (speed_matrix_data['Time']==int(epoch/90))]['AvgSpeed']) #对应的时间段
+            outMat[i,j]=speed
+                              
     '''
-    TODO 这里直接和kh的模型进行对接，
-    注意要加上不同的15分钟时间段，直接写到V里去即可，
     :param:
-    id:   "A"/"B"/"C"/"D"
+    cross_id:   "A"/"B"/"C"/"D" #id似乎是python的保留变量名，我改成cross_id了
     epoch: 以10s为单位,
-
     :return:
     4x4 的速度矩阵
     '''
-    return
+    return outMat
 
 
-def transition_matrix(id, epoch):
-    cross=ord(id)-65 #ABCD通过ASCII读取转为0123
+def transition_matrix(cross_id, epoch):
+    cross=ord(cross_id)-65 #ABCD通过ASCII读取转为0123
     return transition_matrix_data[cross]
 
 
-def poisson_matrix(id, epoch):
+def poisson_matrix(cross_id, epoch):
 
     pass
